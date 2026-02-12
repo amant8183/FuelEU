@@ -12,7 +12,9 @@
     "test": "jest --verbose",
     "test:unit": "jest --verbose --testPathPattern=tests/unit",
     "test:integration": "jest --verbose --testPathPattern=tests/integration",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "migrate:latest": "knex migrate:latest --knexfile knexfile.ts",
+    "migrate:rollback": "knex migrate:rollback --knexfile knexfile.ts"
   },
   "keywords": [],
   "author": "",
@@ -31,5 +33,10 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.55.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "knex": "^3.1.0",
+    "pg": "^8.18.0"
   }
 }
