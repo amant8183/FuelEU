@@ -28,6 +28,9 @@ import { BankSurplusUseCase } from '../../core/application/use-cases/BankSurplus
 import { ApplyBankedSurplusUseCase } from '../../core/application/use-cases/ApplyBankedSurplusUseCase';
 import { CreatePoolUseCase } from '../../core/application/use-cases/CreatePoolUseCase';
 
+// --- Inbound adapters ---
+import { createRouteController } from '../../adapters/inbound/http/RouteController';
+
 // ─── Dependency Injection ──────────────────────────────────────────
 
 const routeRepo = new PgRouteRepository(db);
@@ -56,6 +59,9 @@ app.use(express.json());
 app.get('/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// --- Routes ---
+app.use('/routes', createRouteController(getRoutes, setBaseline, compareRoutes));
 
 // --- Error handler ---
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
