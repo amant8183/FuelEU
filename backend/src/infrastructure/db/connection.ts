@@ -5,11 +5,16 @@
  * This is the ONLY place framework (Knex) is instantiated.
  */
 
+import 'dotenv/config';
 import knex, { Knex } from 'knex';
 import knexConfig from '../../../knexfile';
 
 const env = process.env.NODE_ENV || 'development';
 
-const db: Knex = knex(knexConfig[env]);
+// Handle CJS/ESM interop — ts-jest may wrap the default export
+const resolvedConfig = (knexConfig as any).default ?? knexConfig;
+const envConfig = resolvedConfig[env] ?? resolvedConfig['development'];
+
+const db: Knex = knex(envConfig);
 
 export default db;
