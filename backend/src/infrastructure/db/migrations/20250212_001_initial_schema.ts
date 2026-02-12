@@ -1,7 +1,7 @@
 /**
  * Initial migration — create all domain tables.
  *
- * Tables: routes, compliance_balances, bank_entries, pools, pool_members
+ * Tables: routes, ship_compliance, bank_entries, pools, pool_members
  */
 
 import { Knex } from 'knex';
@@ -22,8 +22,8 @@ export async function up(knex: Knex): Promise<void> {
         t.timestamps(true, true);
     });
 
-    // --- compliance_balances ---
-    await knex.schema.createTable('compliance_balances', (t) => {
+    // --- ship_compliance ---
+    await knex.schema.createTable('ship_compliance', (t) => {
         t.uuid('id').primary().defaultTo(knex.fn.uuid());
         t.string('ship_id').notNullable();
         t.integer('year').notNullable();
@@ -62,6 +62,6 @@ export async function down(knex: Knex): Promise<void> {
     await knex.schema.dropTableIfExists('pool_members');
     await knex.schema.dropTableIfExists('pools');
     await knex.schema.dropTableIfExists('bank_entries');
-    await knex.schema.dropTableIfExists('compliance_balances');
+    await knex.schema.dropTableIfExists('ship_compliance');
     await knex.schema.dropTableIfExists('routes');
 }
