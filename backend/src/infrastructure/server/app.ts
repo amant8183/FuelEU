@@ -32,6 +32,7 @@ import { CreatePoolUseCase } from '../../core/application/use-cases/CreatePoolUs
 import { createRouteController } from '../../adapters/inbound/http/RouteController';
 import { createComplianceController } from '../../adapters/inbound/http/ComplianceController';
 import { createBankingController } from '../../adapters/inbound/http/BankingController';
+import { createPoolingController } from '../../adapters/inbound/http/PoolingController';
 
 // ─── Dependency Injection ──────────────────────────────────────────
 
@@ -66,6 +67,7 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/routes', createRouteController(getRoutes, setBaseline, compareRoutes));
 app.use('/compliance', createComplianceController(computeCompliance, getAdjustedCompliance));
 app.use('/banking', createBankingController(bankSurplus, applyBanked));
+app.use('/pools', createPoolingController(createPool, poolRepo));
 
 // --- Error handler ---
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
