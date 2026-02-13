@@ -19,8 +19,8 @@ export class ComputeComplianceBalanceUseCase {
         private readonly complianceRepo: ComplianceRepository,
     ) { }
 
-    async execute(): Promise<ComplianceBalanceDto[]> {
-        const routes = await this.routeRepo.findAll();
+    async execute(year?: number): Promise<ComplianceBalanceDto[]> {
+        const routes = await this.routeRepo.findAll(year);
 
         const records: ComplianceBalance[] = routes.map((r) => {
             const cbGco2eq = computeComplianceBalance(r.ghgIntensity, r.fuelConsumption);

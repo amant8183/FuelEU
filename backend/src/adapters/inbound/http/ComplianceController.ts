@@ -20,9 +20,10 @@ export function createComplianceController(
      * GET /compliance/cb
      * Computes CB for all routes and persists results.
      */
-    router.get('/cb', async (_req: Request, res: Response, next: NextFunction) => {
+    router.get('/cb', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const results = await computeCompliance.execute();
+            const year = req.query.year ? Number(req.query.year) : undefined;
+            const results = await computeCompliance.execute(year);
             res.json(results);
         } catch (err) {
             next(err);
