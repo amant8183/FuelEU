@@ -64,8 +64,10 @@ describe('ComplianceTab', () => {
         );
         const computeBtn = screen.getByRole('button', { name: /Compute CB/i });
         await user.click(computeBtn);
-        expect(await screen.findByText('✓ Surplus')).toBeInTheDocument();
-        expect(screen.getByText('✗ Deficit')).toBeInTheDocument();
+        const surplusEls = await screen.findAllByText('Surplus');
+        expect(surplusEls.length).toBeGreaterThanOrEqual(1);
+        const deficitEls = screen.getAllByText('Deficit');
+        expect(deficitEls.length).toBeGreaterThanOrEqual(1);
     });
 
     it('shows KPI cards after compute', async () => {

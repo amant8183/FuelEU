@@ -67,8 +67,8 @@ export function ComplianceTab() {
             {/* ─── Header ─────────────────────────────────────── */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-surface-900">Compliance Balance</h2>
-                    <p className="text-sm text-surface-500 mt-1">
+                    <h2 className="section-title">Compliance Balance</h2>
+                    <p className="section-subtitle">
                         Compute and inspect GHG compliance per vessel
                     </p>
                 </div>
@@ -76,9 +76,7 @@ export function ComplianceTab() {
                     <button
                         onClick={handleCompute}
                         disabled={loading}
-                        className="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg
-                       hover:bg-primary-700 transition-colors disabled:opacity-50 cursor-pointer
-                       shadow-sm"
+                        className="btn btn-primary"
                     >
                         {loading && viewMode === 'raw' ? 'Computing...' : '⚡ Compute CB'}
                     </button>
@@ -86,9 +84,7 @@ export function ComplianceTab() {
                         <button
                             onClick={handleFetchAdjusted}
                             disabled={loading}
-                            className="px-4 py-2 bg-accent-600 text-white text-sm font-medium rounded-lg
-                         hover:bg-accent-700 transition-colors disabled:opacity-50 cursor-pointer
-                         shadow-sm"
+                            className="btn btn-secondary"
                         >
                             {loading && viewMode === 'adjusted' ? 'Loading...' : '🏦 Adjusted View'}
                         </button>
@@ -98,45 +94,43 @@ export function ComplianceTab() {
 
             {/* ─── Error ───────────────────────────────────────── */}
             {error && (
-                <div className="bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-xl text-sm">
-                    {error}
+                <div className="flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
+                    <span>⚠</span>
+                    <span>{error}</span>
                 </div>
             )}
 
             {/* ─── KPI Cards ──────────────────────────────────── */}
             {activeRecords.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <KpiCard label="Total Ships" value={activeRecords.length.toString()} icon="🚢" />
+                    <KpiCard label="Total Ships" value={activeRecords.length.toString()} icon="🚢" accent="primary" />
                     <KpiCard
                         label="Surplus"
                         value={surplusCount.toString()}
                         icon="✅"
-                        color="success"
+                        accent="success"
                     />
                     <KpiCard
                         label="Deficit"
                         value={deficitCount.toString()}
                         icon="⚠️"
-                        color="error"
+                        accent="error"
                     />
                     <KpiCard
                         label="View Mode"
                         value={viewMode === 'raw' ? 'Raw CB' : 'Adjusted'}
                         icon={viewMode === 'raw' ? '📊' : '🏦'}
-                        color="info"
+                        accent="accent"
                     />
                 </div>
             )}
 
             {/* ─── View Toggle ────────────────────────────────── */}
             {computed && (
-                <div className="flex gap-1 bg-surface-100 rounded-lg p-1 w-fit">
+                <div className="toggle-group">
                     <button
                         onClick={() => setViewMode('raw')}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${viewMode === 'raw'
-                                ? 'bg-white text-surface-800 shadow-sm'
-                                : 'text-surface-500 hover:text-surface-700'
-                            }`}
+                        className={`toggle-btn ${viewMode === 'raw' ? 'toggle-btn--active' : ''}`}
                     >
                         Raw CB
                     </button>
@@ -145,10 +139,7 @@ export function ComplianceTab() {
                             setViewMode('adjusted');
                             if (adjustedRecords.length === 0) handleFetchAdjusted();
                         }}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${viewMode === 'adjusted'
-                                ? 'bg-white text-surface-800 shadow-sm'
-                                : 'text-surface-500 hover:text-surface-700'
-                            }`}
+                        className={`toggle-btn ${viewMode === 'adjusted' ? 'toggle-btn--active' : ''}`}
                     >
                         With Banking
                     </button>
@@ -157,14 +148,14 @@ export function ComplianceTab() {
 
             {/* ─── Empty State ────────────────────────────────── */}
             {!computed && !loading && (
-                <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-12 text-center">
-                    <div className="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="card p-12 text-center">
+                    <div className="w-14 h-14 bg-primary-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                         <span className="text-2xl">📊</span>
                     </div>
-                    <h3 className="text-lg font-semibold text-surface-700 mb-2">
+                    <h3 className="text-base font-semibold text-surface-700 mb-1">
                         No Compliance Data Yet
                     </h3>
-                    <p className="text-sm text-surface-400 max-w-md mx-auto mb-4">
+                    <p className="text-sm text-surface-400 max-w-sm mx-auto">
                         Click "Compute CB" to analyze GHG compliance balance for all routes.
                     </p>
                 </div>
@@ -172,53 +163,69 @@ export function ComplianceTab() {
 
             {/* ─── Table ───────────────────────────────────────── */}
             {activeRecords.length > 0 && (
-                <div className="bg-white rounded-2xl border border-surface-200 shadow-sm overflow-hidden">
+                <div className="card overflow-hidden">
+                    {/* Ship count summary */}
+                    <div className="px-5 py-3 border-b border-surface-100 flex items-center justify-between">
+                        <span className="text-xs font-medium text-surface-500">
+                            {activeRecords.length} vessel{activeRecords.length !== 1 ? 's' : ''} analyzed
+                        </span>
+                        <span className="badge badge-neutral text-xs">
+                            {viewMode === 'raw' ? 'Raw' : 'Adjusted'}
+                        </span>
+                    </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="bg-surface-50 border-b border-surface-200">
-                                    <th className="text-left px-4 py-3 font-semibold text-surface-600">Ship</th>
-                                    <th className="text-right px-4 py-3 font-semibold text-surface-600">Year</th>
+                                <tr className="bg-surface-50/80 border-b border-surface-200">
+                                    <th className="text-left px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Ship</th>
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Year</th>
                                     {viewMode === 'adjusted' && (
                                         <>
-                                            <th className="text-right px-4 py-3 font-semibold text-surface-600">
+                                            <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">
                                                 Raw CB (gCO₂eq)
                                             </th>
-                                            <th className="text-right px-4 py-3 font-semibold text-surface-600">
+                                            <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">
                                                 Banked
                                             </th>
                                         </>
                                     )}
-                                    <th className="text-right px-4 py-3 font-semibold text-surface-600">
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">
                                         {viewMode === 'adjusted' ? 'Adjusted CB' : 'CB (gCO₂eq)'}
                                     </th>
-                                    <th className="text-center px-4 py-3 font-semibold text-surface-600">Status</th>
+                                    <th className="text-center px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {activeRecords.map((rec) => (
+                            <tbody className="divide-y divide-surface-100">
+                                {activeRecords.map((rec, idx) => (
                                     <tr
                                         key={`${rec.shipId}-${rec.year}`}
-                                        className="border-b border-surface-100 hover:bg-surface-50 transition-colors"
+                                        className={`table-row-hover transition-colors ${idx % 2 === 1 ? 'bg-surface-50/50' : ''}`}
+                                        style={{
+                                            borderLeftColor: rec.status === 'surplus'
+                                                ? 'var(--color-success-400)'
+                                                : rec.status === 'deficit'
+                                                    ? 'var(--color-error-400)'
+                                                    : undefined
+                                        }}
                                     >
-                                        <td className="px-4 py-3 font-mono font-semibold text-surface-800">
+                                        <td className="px-5 py-3.5 font-mono font-semibold text-surface-900">
                                             {rec.shipId}
                                         </td>
-                                        <td className="px-4 py-3 text-right text-surface-600">{rec.year}</td>
+                                        <td className="px-5 py-3.5 text-right text-surface-600 tabular-nums">{rec.year}</td>
                                         {viewMode === 'adjusted' && 'rawCbGco2eq' in rec && (
                                             <>
-                                                <td className="px-4 py-3 text-right font-mono text-surface-600">
+                                                <td className="px-5 py-3.5 text-right font-mono text-surface-600 tabular-nums">
                                                     {(rec as AdjustedComplianceBalance).rawCbGco2eq.toLocaleString()}
                                                 </td>
-                                                <td className="px-4 py-3 text-right font-mono text-accent-600">
+                                                <td className="px-5 py-3.5 text-right font-mono text-accent-600 tabular-nums">
                                                     {(rec as AdjustedComplianceBalance).bankedSurplus.toLocaleString()}
                                                 </td>
                                             </>
                                         )}
-                                        <td className="px-4 py-3 text-right font-mono font-semibold text-surface-800">
+                                        <td className="px-5 py-3.5 text-right font-mono font-bold text-surface-900 tabular-nums">
                                             {rec.cbGco2eq.toLocaleString()}
                                         </td>
-                                        <td className="px-4 py-3 text-center">
+                                        <td className="px-5 py-3.5 text-center">
                                             <StatusBadge status={rec.status} />
                                         </td>
                                     </tr>
@@ -232,19 +239,21 @@ export function ComplianceTab() {
     );
 }
 
+/* ─── Sub-components ──────────────────────────────────────────── */
+
 function StatusBadge({ status }: { status: string }) {
-    const styles: Record<string, string> = {
-        surplus: 'bg-success-50 text-success-700 border-success-200',
-        deficit: 'bg-error-50 text-error-700 border-error-200',
-        neutral: 'bg-surface-100 text-surface-600 border-surface-200',
-    };
+    const cls =
+        status === 'surplus'
+            ? 'badge badge-surplus'
+            : status === 'deficit'
+                ? 'badge badge-deficit'
+                : 'badge badge-neutral';
 
     return (
-        <span
-            className={`inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full border ${styles[status] ?? styles.neutral
-                }`}
-        >
-            {status === 'surplus' ? '✓ Surplus' : status === 'deficit' ? '✗ Deficit' : '— Neutral'}
+        <span className={cls}>
+            <span className={`w-1.5 h-1.5 rounded-full ${status === 'surplus' ? 'bg-success-600' : status === 'deficit' ? 'bg-error-600' : 'bg-surface-400'
+                }`} />
+            {status === 'surplus' ? 'Surplus' : status === 'deficit' ? 'Deficit' : 'Neutral'}
         </span>
     );
 }
@@ -253,24 +262,24 @@ function KpiCard({
     label,
     value,
     icon,
-    color,
+    accent,
 }: {
     label: string;
     value: string;
     icon: string;
-    color?: 'success' | 'error' | 'info';
+    accent?: 'primary' | 'success' | 'error' | 'accent';
 }) {
-    const bg =
-        color === 'success'
-            ? 'bg-success-50 border-success-200'
-            : color === 'error'
-                ? 'bg-error-50 border-error-200'
-                : color === 'info'
-                    ? 'bg-info-50 border-info-200'
-                    : 'bg-white border-surface-200';
+    const accentCls =
+        accent === 'success'
+            ? 'card-kpi--success'
+            : accent === 'error'
+                ? 'card-kpi--error'
+                : accent === 'accent'
+                    ? 'card-kpi--accent'
+                    : 'card-kpi--primary';
 
     return (
-        <div className={`rounded-xl border p-4 ${bg}`}>
+        <div className={`card-kpi ${accentCls} p-4`}>
             <div className="flex items-center gap-2 mb-1">
                 <span className="text-base">{icon}</span>
                 <span className="text-xs font-medium text-surface-500">{label}</span>
