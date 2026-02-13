@@ -188,8 +188,9 @@ export function BankingTab() {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-surface-600 mb-1">Year</label>
+                            <label htmlFor="deposit-year" className="block text-xs font-medium text-surface-600 mb-1">Year</label>
                             <input
+                                id="deposit-year"
                                 type="number"
                                 value={depositYear}
                                 onChange={(e) => setDepositYear(e.target.value)}
