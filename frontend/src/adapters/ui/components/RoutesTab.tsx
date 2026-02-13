@@ -5,7 +5,7 @@
  * - Year filter dropdown
  * - Set Baseline button per row
  * - Compare button for non-baseline routes
- * - Visual indicators for baseline, surplus/deficit
+ * - Skeleton loading, empty state, striped rows, hover highlights
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -69,126 +69,130 @@ export function RoutesTab() {
             {/* ─── Header + Filter ─────────────────────────────── */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-surface-900">Routes & Voyage Data</h2>
-                    <p className="text-sm text-surface-500 mt-1">
+                    <h2 className="section-title">Routes &amp; Voyage Data</h2>
+                    <p className="section-subtitle">
                         Manage routes, set baselines, and compare GHG intensity
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <select
-                        value={yearFilter ?? ''}
-                        onChange={(e) =>
-                            setYearFilter(e.target.value ? Number(e.target.value) : undefined)
-                        }
-                        className="px-3 py-2 border border-surface-200 rounded-lg text-sm bg-white text-surface-700
-                       focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-400
-                       transition-all"
-                    >
-                        <option value="">All Years</option>
-                        {years.map((y) => (
-                            <option key={y} value={y}>
-                                {y}
-                            </option>
-                        ))}
-                    </select>
-                    <span className="text-xs text-surface-400 bg-surface-100 px-2.5 py-1 rounded-full">
-                        {routes.length} routes
+                    <div className="relative">
+                        <select
+                            value={yearFilter ?? ''}
+                            onChange={(e) =>
+                                setYearFilter(e.target.value ? Number(e.target.value) : undefined)
+                            }
+                            className="input appearance-none pr-8 !w-auto min-w-[120px] cursor-pointer"
+                        >
+                            <option value="">All Years</option>
+                            {years.map((y) => (
+                                <option key={y} value={y}>
+                                    {y}
+                                </option>
+                            ))}
+                        </select>
+                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none text-xs">▼</span>
+                    </div>
+                    <span className="badge badge-neutral">
+                        {routes.length} route{routes.length !== 1 ? 's' : ''}
                     </span>
                 </div>
             </div>
 
             {/* ─── Error ───────────────────────────────────────── */}
             {error && (
-                <div className="bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-xl text-sm">
-                    {error}
+                <div className="flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
+                    <span>⚠</span>
+                    <span>{error}</span>
                 </div>
             )}
 
             {/* ─── Table ───────────────────────────────────────── */}
-            <div className="bg-white rounded-2xl border border-surface-200 shadow-sm overflow-hidden">
+            <div className="card overflow-hidden">
                 {loading ? (
-                    <div className="flex items-center justify-center py-20">
-                        <div className="w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
-                    </div>
+                    <TableSkeleton />
+                ) : routes.length === 0 ? (
+                    <EmptyState />
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="bg-surface-50 border-b border-surface-200">
-                                    <th className="text-left px-4 py-3 font-semibold text-surface-600">Route</th>
-                                    <th className="text-left px-4 py-3 font-semibold text-surface-600">Vessel</th>
-                                    <th className="text-left px-4 py-3 font-semibold text-surface-600">Fuel</th>
-                                    <th className="text-right px-4 py-3 font-semibold text-surface-600">Year</th>
-                                    <th className="text-right px-4 py-3 font-semibold text-surface-600">GHG Intensity</th>
-                                    <th className="text-right px-4 py-3 font-semibold text-surface-600">Fuel (t)</th>
-                                    <th className="text-right px-4 py-3 font-semibold text-surface-600">Distance (nm)</th>
-                                    <th className="text-right px-4 py-3 font-semibold text-surface-600">Emissions (t)</th>
-                                    <th className="text-center px-4 py-3 font-semibold text-surface-600">Actions</th>
+                                <tr className="bg-surface-50/80 border-b border-surface-200">
+                                    <th className="text-left px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Route</th>
+                                    <th className="text-left px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Vessel</th>
+                                    <th className="text-left px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Fuel</th>
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Year</th>
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">GHG Intensity</th>
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Fuel (t)</th>
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Distance (nm)</th>
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Emissions (t)</th>
+                                    <th className="text-center px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider w-[180px]">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {routes.map((route) => (
+                            <tbody className="divide-y divide-surface-100">
+                                {routes.map((route, idx) => (
                                     <tr
                                         key={route.id}
                                         className={`
-                      border-b border-surface-100 transition-colors
-                      ${route.isBaseline ? 'bg-primary-50/40' : 'hover:bg-surface-50'}
-                    `}
+                                            table-row-hover transition-colors
+                                            ${route.isBaseline ? 'bg-primary-50/30' : idx % 2 === 1 ? 'bg-surface-50/50' : ''}
+                                        `}
                                     >
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-mono font-semibold text-surface-800">
+                                        <td className="px-5 py-3.5">
+                                            <div className="flex items-center gap-2.5">
+                                                <span className="font-mono font-semibold text-surface-900">
                                                     {route.routeId}
                                                 </span>
                                                 {route.isBaseline && (
-                                                    <span className="text-[10px] font-bold uppercase tracking-wider bg-primary-500 text-white px-1.5 py-0.5 rounded">
+                                                    <span className="badge badge-info">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-primary-500" />
                                                         Baseline
                                                     </span>
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 text-surface-600">{route.vesselType}</td>
-                                        <td className="px-4 py-3">
-                                            <span className="px-2 py-0.5 bg-surface-100 text-surface-600 rounded text-xs font-medium">
+                                        <td className="px-5 py-3.5 text-surface-600">{route.vesselType}</td>
+                                        <td className="px-5 py-3.5">
+                                            <span className="badge badge-neutral">
                                                 {route.fuelType}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3 text-right text-surface-600">{route.year}</td>
-                                        <td className="px-4 py-3 text-right font-mono font-semibold text-surface-800">
+                                        <td className="px-5 py-3.5 text-right text-surface-600 tabular-nums">{route.year}</td>
+                                        <td className="px-5 py-3.5 text-right font-mono font-semibold text-surface-900 tabular-nums">
                                             {route.ghgIntensity.toFixed(1)}
                                         </td>
-                                        <td className="px-4 py-3 text-right text-surface-600">
+                                        <td className="px-5 py-3.5 text-right text-surface-600 tabular-nums">
                                             {route.fuelConsumption.toLocaleString()}
                                         </td>
-                                        <td className="px-4 py-3 text-right text-surface-600">
+                                        <td className="px-5 py-3.5 text-right text-surface-600 tabular-nums">
                                             {route.distance.toLocaleString()}
                                         </td>
-                                        <td className="px-4 py-3 text-right text-surface-600">
+                                        <td className="px-5 py-3.5 text-right text-surface-600 tabular-nums">
                                             {route.totalEmissions.toLocaleString()}
                                         </td>
-                                        <td className="px-4 py-3 text-center">
-                                            <div className="flex items-center justify-center gap-1.5">
+                                        <td className="px-5 py-3.5 text-center">
+                                            <div className="flex items-center justify-center gap-2">
                                                 {!route.isBaseline && (
                                                     <>
                                                         <button
                                                             onClick={() => handleSetBaseline(route.routeId)}
-                                                            className="px-2.5 py-1 text-xs font-medium text-primary-600 bg-primary-50 hover:bg-primary-100
-                                         rounded-lg transition-colors cursor-pointer"
+                                                            className="btn btn-secondary btn-sm"
                                                         >
                                                             Set Baseline
                                                         </button>
                                                         <button
                                                             onClick={() => handleCompare(route.routeId)}
                                                             disabled={comparingId === route.routeId}
-                                                            className="px-2.5 py-1 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100
-                                         rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                                                            className="btn btn-sm"
+                                                            style={{ backgroundColor: 'var(--color-accent-50)', color: 'var(--color-accent-700)', borderColor: 'var(--color-accent-200)' }}
                                                         >
                                                             {comparingId === route.routeId ? '...' : 'Compare'}
                                                         </button>
                                                     </>
                                                 )}
                                                 {route.isBaseline && (
-                                                    <span className="text-xs text-primary-500 font-medium">★ Active</span>
+                                                    <span className="text-xs text-primary-600 font-semibold flex items-center gap-1">
+                                                        <span className="text-primary-400">★</span> Active
+                                                    </span>
                                                 )}
                                             </div>
                                         </td>
@@ -202,8 +206,9 @@ export function RoutesTab() {
 
             {/* ─── Comparison Result ──────────────────────────── */}
             {comparison && (
-                <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-6">
-                    <h3 className="text-lg font-bold text-surface-900 mb-4">
+                <div className="card p-6">
+                    <h3 className="text-lg font-bold text-surface-900 mb-4 flex items-center gap-2">
+                        <span className="text-primary-500">⟷</span>
                         Comparison: {comparison.baselineRouteId} vs {comparison.alternativeRouteId}
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -235,6 +240,43 @@ export function RoutesTab() {
     );
 }
 
+/* ─── Sub-components ──────────────────────────────────────────── */
+
+function TableSkeleton() {
+    return (
+        <div className="p-5 space-y-3">
+            {/* Header skeleton */}
+            <div className="flex gap-4 mb-4">
+                {[80, 60, 40, 40, 70, 50, 60, 60, 80].map((w, i) => (
+                    <div key={i} className="skeleton h-4" style={{ width: `${w}px` }} />
+                ))}
+            </div>
+            {/* Row skeletons */}
+            {[...Array(5)].map((_, row) => (
+                <div key={row} className="flex gap-4 py-1">
+                    {[80, 60, 40, 40, 70, 50, 60, 60, 80].map((w, i) => (
+                        <div key={i} className="skeleton h-5 rounded" style={{ width: `${w}px` }} />
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function EmptyState() {
+    return (
+        <div className="flex flex-col items-center justify-center py-16 px-6">
+            <div className="w-14 h-14 bg-surface-100 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-2xl">🚢</span>
+            </div>
+            <h3 className="text-base font-semibold text-surface-700 mb-1">No Routes Found</h3>
+            <p className="text-sm text-surface-400 text-center max-w-sm">
+                No route data is available for the selected filter. Try changing the year filter or check your data source.
+            </p>
+        </div>
+    );
+}
+
 function ComparisonCard({
     label,
     value,
@@ -246,18 +288,18 @@ function ComparisonCard({
     unit?: string;
     highlight?: 'positive' | 'negative';
 }) {
-    const color =
+    const accent =
         highlight === 'positive'
-            ? 'text-success-600 bg-success-50 border-success-200'
+            ? 'card-kpi--success'
             : highlight === 'negative'
-                ? 'text-error-600 bg-error-50 border-error-200'
-                : 'text-surface-800 bg-surface-50 border-surface-200';
+                ? 'card-kpi--error'
+                : 'card-kpi--primary';
 
     return (
-        <div className={`rounded-xl border p-4 ${color}`}>
-            <p className="text-xs font-medium opacity-70 mb-1">{label}</p>
-            <p className="text-xl font-bold">{value}</p>
-            {unit && <p className="text-xs opacity-50 mt-0.5">{unit}</p>}
+        <div className={`card-kpi ${accent} p-4`}>
+            <p className="text-xs font-medium text-surface-500 mb-1">{label}</p>
+            <p className="text-xl font-bold text-surface-900">{value}</p>
+            {unit && <p className="text-xs text-surface-400 mt-0.5">{unit}</p>}
         </div>
     );
 }
