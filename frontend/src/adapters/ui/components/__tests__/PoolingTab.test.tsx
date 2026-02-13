@@ -52,7 +52,7 @@ describe('PoolingTab', () => {
             </ApiProvider>,
         );
         expect(screen.getByText('Article 21 — Pooling')).toBeInTheDocument();
-        expect(screen.getByText('Create Pool')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /Create Pool/i })).toBeInTheDocument();
     });
 
     it('loads and displays existing pools', async () => {
@@ -97,7 +97,7 @@ describe('PoolingTab', () => {
         );
         await screen.findByText('POOL-1');
         await user.type(screen.getByPlaceholderText(/SHIP-001/i), 'ONLY-ONE');
-        await user.click(screen.getByText('🤝 Create Pool'));
+        await user.click(screen.getByRole('button', { name: /Create Pool/i }));
         expect(await screen.findByText(/at least 2 ship IDs/i)).toBeInTheDocument();
     });
 
@@ -113,7 +113,7 @@ describe('PoolingTab', () => {
             screen.getByPlaceholderText(/SHIP-001/i),
             'SHIP-A, SHIP-B',
         );
-        await user.click(screen.getByText('🤝 Create Pool'));
+        await user.click(screen.getByRole('button', { name: /Create Pool/i }));
         expect(await screen.findByText(/Pool "POOL-NEW" created/i)).toBeInTheDocument();
     });
 

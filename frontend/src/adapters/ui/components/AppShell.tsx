@@ -3,10 +3,11 @@
  */
 
 import type { ReactNode } from 'react';
+import { Ship, Wifi } from 'lucide-react';
 
 interface AppShellProps {
     activeTab: string;
-    tabs: { key: string; label: string; icon: string }[];
+    tabs: { key: string; label: string; icon: ReactNode }[];
     onTabChange: (key: string) => void;
     children: ReactNode;
 }
@@ -30,7 +31,7 @@ export function AppShell({ activeTab, tabs, onTabChange, children }: AppShellPro
                         {/* Logo */}
                         <div className="flex items-center gap-3">
                             <div className="w-9 h-9 bg-linear-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center shadow-sm" aria-hidden="true">
-                                <span className="text-white text-lg">⛴</span>
+                                <Ship size={20} className="text-white" />
                             </div>
                             <div>
                                 <h1 className="text-lg font-bold text-surface-900 leading-tight">
@@ -44,7 +45,7 @@ export function AppShell({ activeTab, tabs, onTabChange, children }: AppShellPro
 
                         {/* Status badge */}
                         <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-accent-50 border border-accent-200 rounded-full">
-                            <span className="w-2 h-2 bg-accent-500 rounded-full animate-pulse" aria-hidden="true" />
+                            <Wifi size={12} className="text-accent-500 animate-pulse" aria-hidden="true" />
                             <span className="text-xs font-medium text-accent-700" role="status">API Connected</span>
                         </div>
                     </div>
@@ -72,7 +73,7 @@ export function AppShell({ activeTab, tabs, onTabChange, children }: AppShellPro
                                     }
                                 `}
                             >
-                                <span className="text-base" aria-hidden="true">{tab.icon}</span>
+                                <span aria-hidden="true">{tab.icon}</span>
                                 {tab.label}
                             </button>
                         ))}

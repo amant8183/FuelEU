@@ -9,6 +9,8 @@
  */
 
 import { useState, useEffect } from 'react';
+import { Zap, Landmark, AlertTriangle, Ship, CheckCircle, BarChart3 } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useApi } from '../hooks/useApi';
 import type { ComplianceBalance, AdjustedComplianceBalance } from '../../../core/domain/types';
 
@@ -78,7 +80,7 @@ export function ComplianceTab() {
                         disabled={loading}
                         className="btn btn-primary"
                     >
-                        {loading && viewMode === 'raw' ? 'Computing...' : '⚡ Compute CB'}
+                        {loading && viewMode === 'raw' ? 'Computing...' : <><Zap size={14} /> Compute CB</>}
                     </button>
                     {computed && (
                         <button
@@ -86,7 +88,7 @@ export function ComplianceTab() {
                             disabled={loading}
                             className="btn btn-secondary"
                         >
-                            {loading && viewMode === 'adjusted' ? 'Loading...' : '🏦 Adjusted View'}
+                            {loading && viewMode === 'adjusted' ? 'Loading...' : <><Landmark size={14} /> Adjusted View</>}
                         </button>
                     )}
                 </div>
@@ -94,8 +96,8 @@ export function ComplianceTab() {
 
             {/* ─── Error ───────────────────────────────────────── */}
             {error && (
-                <div className="flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
-                    <span>⚠</span>
+                <div className="fade-in flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
+                    <AlertTriangle size={16} />
                     <span>{error}</span>
                 </div>
             )}
@@ -103,23 +105,23 @@ export function ComplianceTab() {
             {/* ─── KPI Cards ──────────────────────────────────── */}
             {activeRecords.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <KpiCard label="Total Ships" value={activeRecords.length.toString()} icon="🚢" accent="primary" />
+                    <KpiCard label="Total Ships" value={activeRecords.length.toString()} icon={<Ship size={16} />} accent="primary" />
                     <KpiCard
                         label="Surplus"
                         value={surplusCount.toString()}
-                        icon="✅"
+                        icon={<CheckCircle size={16} />}
                         accent="success"
                     />
                     <KpiCard
                         label="Deficit"
                         value={deficitCount.toString()}
-                        icon="⚠️"
+                        icon={<AlertTriangle size={16} />}
                         accent="error"
                     />
                     <KpiCard
                         label="View Mode"
                         value={viewMode === 'raw' ? 'Raw CB' : 'Adjusted'}
-                        icon={viewMode === 'raw' ? '📊' : '🏦'}
+                        icon={viewMode === 'raw' ? <BarChart3 size={16} /> : <Landmark size={16} />}
                         accent="accent"
                     />
                 </div>
@@ -150,7 +152,7 @@ export function ComplianceTab() {
             {!computed && !loading && (
                 <div className="card p-12 text-center">
                     <div className="w-14 h-14 bg-primary-50 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <span className="text-2xl">📊</span>
+                        <BarChart3 size={28} className="text-primary-400" />
                     </div>
                     <h3 className="text-base font-semibold text-surface-700 mb-1">
                         No Compliance Data Yet
@@ -173,7 +175,7 @@ export function ComplianceTab() {
                             {viewMode === 'raw' ? 'Raw' : 'Adjusted'}
                         </span>
                     </div>
-                    <div className="overflow-x-auto">
+                    <div className="table-scroll">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="bg-surface-50/80 border-b border-surface-200">
@@ -266,7 +268,7 @@ function KpiCard({
 }: {
     label: string;
     value: string;
-    icon: string;
+    icon: ReactNode;
     accent?: 'primary' | 'success' | 'error' | 'accent';
 }) {
     const accentCls =

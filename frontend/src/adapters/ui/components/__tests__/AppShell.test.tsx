@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { AppShell } from '../AppShell';
 
 const TABS = [
-    { key: 'routes', label: 'Routes', icon: '🚢' },
-    { key: 'compliance', label: 'Compliance', icon: '📊' },
-    { key: 'banking', label: 'Banking', icon: '🏦' },
-    { key: 'pooling', label: 'Pooling', icon: '🤝' },
+    { key: 'routes', label: 'Routes', icon: 'R' },
+    { key: 'compliance', label: 'Compliance', icon: 'C' },
+    { key: 'banking', label: 'Banking', icon: 'B' },
+    { key: 'pooling', label: 'Pooling', icon: 'P' },
 ];
 
 describe('AppShell', () => {

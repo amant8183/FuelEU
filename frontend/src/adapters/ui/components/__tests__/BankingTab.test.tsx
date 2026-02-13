@@ -38,8 +38,8 @@ describe('BankingTab', () => {
                 <BankingTab />
             </ApiProvider>,
         );
-        expect(screen.getByText('Deposit Surplus')).toBeInTheDocument();
-        expect(screen.getByText('Apply Banked')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /Deposit Surplus/i })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /Apply Banked/i })).toBeInTheDocument();
     });
 
     it('renders KPI cards with zero values initially', () => {

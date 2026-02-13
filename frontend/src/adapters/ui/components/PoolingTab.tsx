@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { Users, Ship, BarChart3, AlertTriangle, CheckCircle, Plus, ChevronDown } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import type { Pool } from '../../../core/domain/types';
 
@@ -90,21 +91,21 @@ export function PoolingTab() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="card-kpi card-kpi--primary p-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-base">🤝</span>
+                        <Users size={16} className="text-primary-500" />
                         <span className="text-xs font-medium text-surface-500">Total Pools</span>
                     </div>
                     <p className="text-2xl font-bold text-surface-900 tabular-nums">{pools.length}</p>
                 </div>
                 <div className="card-kpi card-kpi--success p-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-base">🚢</span>
+                        <Ship size={16} className="text-success-500" />
                         <span className="text-xs font-medium text-surface-500">Ships Pooled</span>
                     </div>
                     <p className="text-2xl font-bold text-surface-900 tabular-nums">{totalShips}</p>
                 </div>
                 <div className="card-kpi card-kpi--accent p-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-base">📊</span>
+                        <BarChart3 size={16} className="text-accent-500" />
                         <span className="text-xs font-medium text-surface-500">Avg Net CB</span>
                     </div>
                     <p className="text-2xl font-bold text-surface-900 tabular-nums">{avgNetCb}</p>
@@ -114,14 +115,14 @@ export function PoolingTab() {
 
             {/* ─── Feedback ───────────────────────────────────── */}
             {error && (
-                <div className="flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
-                    <span>⚠</span>
+                <div className="fade-in flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
+                    <AlertTriangle size={16} />
                     <span>{error}</span>
                 </div>
             )}
             {success && (
-                <div className="flex items-center gap-2 bg-success-50 border border-success-500/20 text-success-700 px-4 py-3 rounded-lg text-sm">
-                    <span>✓</span>
+                <div className="fade-in flex items-center gap-2 bg-success-50 border border-success-500/20 text-success-700 px-4 py-3 rounded-lg text-sm">
+                    <CheckCircle size={16} />
                     <span>{success}</span>
                 </div>
             )}
@@ -130,7 +131,7 @@ export function PoolingTab() {
             <div className="card p-6">
                 <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center">
-                        <span className="text-xl">➕</span>
+                        <Plus size={22} className="text-accent-400" />
                     </div>
                     <div>
                         <h3 className="text-base font-bold text-surface-900">Create Pool</h3>
@@ -171,7 +172,7 @@ export function PoolingTab() {
                             disabled={creating}
                             className="btn btn-primary"
                         >
-                            {creating ? 'Creating...' : '🤝 Create Pool'}
+                            {creating ? 'Creating...' : <><Users size={14} /> Create Pool</>}
                         </button>
                     </div>
                 </form>
@@ -183,7 +184,7 @@ export function PoolingTab() {
             ) : pools.length === 0 ? (
                 <div className="card p-12 text-center">
                     <div className="w-14 h-14 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <span className="text-2xl">🤝</span>
+                        <Users size={28} className="text-accent-400" />
                     </div>
                     <h3 className="text-base font-semibold text-surface-700 mb-1">No Pools Yet</h3>
                     <p className="text-sm text-surface-400">Create a pool above to get started.</p>
@@ -205,7 +206,7 @@ export function PoolingTab() {
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center">
-                                        <span className="text-lg">🤝</span>
+                                        <Users size={18} className="text-accent-500" />
                                     </div>
                                     <div className="text-left">
                                         <p className="font-mono font-semibold text-surface-900">{pool.poolId}</p>
@@ -225,12 +226,7 @@ export function PoolingTab() {
                                             <span className="text-xs font-normal text-surface-400 ml-1">gCO₂eq</span>
                                         </p>
                                     </div>
-                                    <span
-                                        className={`text-surface-400 transition-transform duration-200 ${expandedPool === pool.poolId ? 'rotate-180' : ''
-                                            }`}
-                                    >
-                                        ▼
-                                    </span>
+                                    <ChevronDown size={16} className={`text-surface-400 transition-transform duration-200 ${expandedPool === pool.poolId ? 'rotate-180' : ''}`} />
                                 </div>
                             </button>
 

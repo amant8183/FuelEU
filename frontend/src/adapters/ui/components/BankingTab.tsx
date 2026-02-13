@@ -9,6 +9,7 @@
  */
 
 import { useState } from 'react';
+import { ArrowDownToLine, Wallet, ArrowUpFromLine, RefreshCw, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import type { BankEntry } from '../../../core/domain/types';
 
@@ -100,14 +101,14 @@ export function BankingTab() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="card-kpi card-kpi--primary p-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-base">📥</span>
+                        <ArrowDownToLine size={16} className="text-primary-500" />
                         <span className="text-xs font-medium text-surface-500">Deposits</span>
                     </div>
                     <p className="text-2xl font-bold text-surface-900 tabular-nums">{depositCount}</p>
                 </div>
                 <div className="card-kpi card-kpi--success p-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-base">💰</span>
+                        <Wallet size={16} className="text-success-500" />
                         <span className="text-xs font-medium text-surface-500">Total Banked</span>
                     </div>
                     <p className="text-2xl font-bold text-surface-900 tabular-nums">{totalDeposited.toLocaleString()}</p>
@@ -115,14 +116,14 @@ export function BankingTab() {
                 </div>
                 <div className="card-kpi card-kpi--accent p-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-base">📤</span>
+                        <ArrowUpFromLine size={16} className="text-accent-500" />
                         <span className="text-xs font-medium text-surface-500">Applies</span>
                     </div>
                     <p className="text-2xl font-bold text-surface-900 tabular-nums">{applyCount}</p>
                 </div>
                 <div className="card-kpi card-kpi--error p-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-base">🔄</span>
+                        <RefreshCw size={16} className="text-error-500" />
                         <span className="text-xs font-medium text-surface-500">Total Applied</span>
                     </div>
                     <p className="text-2xl font-bold text-surface-900 tabular-nums">{totalApplied.toLocaleString()}</p>
@@ -132,14 +133,14 @@ export function BankingTab() {
 
             {/* ─── Feedback ───────────────────────────────────── */}
             {error && (
-                <div className="flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
-                    <span>⚠</span>
+                <div className="fade-in flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
+                    <AlertTriangle size={16} />
                     <span>{error}</span>
                 </div>
             )}
             {success && (
-                <div className="flex items-center gap-2 bg-success-50 border border-success-500/20 text-success-700 px-4 py-3 rounded-lg text-sm">
-                    <span>✓</span>
+                <div className="fade-in flex items-center gap-2 bg-success-50 border border-success-500/20 text-success-700 px-4 py-3 rounded-lg text-sm">
+                    <CheckCircle size={16} />
                     <span>{success}</span>
                 </div>
             )}
@@ -150,7 +151,7 @@ export function BankingTab() {
                 <div className="card p-6">
                     <div className="flex items-center gap-3 mb-5">
                         <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center">
-                            <span className="text-xl">📥</span>
+                            <ArrowDownToLine size={22} className="text-primary-400" />
                         </div>
                         <div>
                             <h3 className="text-base font-bold text-surface-900">Deposit Surplus</h3>
@@ -201,7 +202,7 @@ export function BankingTab() {
                             disabled={loading}
                             className="btn btn-primary w-full"
                         >
-                            {loading ? 'Processing...' : '📥 Deposit Surplus'}
+                            {loading ? 'Processing...' : <><ArrowDownToLine size={14} /> Deposit Surplus</>}
                         </button>
                     </form>
                 </div>
@@ -210,7 +211,7 @@ export function BankingTab() {
                 <div className="card p-6">
                     <div className="flex items-center gap-3 mb-5">
                         <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center">
-                            <span className="text-xl">📤</span>
+                            <ArrowUpFromLine size={22} className="text-accent-400" />
                         </div>
                         <div>
                             <h3 className="text-base font-bold text-surface-900">Apply Banked</h3>
@@ -250,7 +251,7 @@ export function BankingTab() {
                             disabled={loading}
                             className="btn btn-secondary w-full"
                         >
-                            {loading ? 'Processing...' : '📤 Apply Surplus'}
+                            {loading ? 'Processing...' : <><ArrowUpFromLine size={14} /> Apply Surplus</>}
                         </button>
                     </form>
                 </div>

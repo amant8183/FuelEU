@@ -389,4 +389,73 @@
         box-shadow: var(--shadow-xs);
         font-weight: 600;
     }
+
+    /* ---- Responsive Table Scroll ---- */
+    .table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-scroll::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .table-scroll::-webkit-scrollbar-track {
+        background: var(--color-surface-100);
+        border-radius: 2px;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb {
+        background: var(--color-surface-300);
+        border-radius: 2px;
+    }
+
+    /* ---- Fade In (feedback banners) ---- */
+    .fade-in {
+        animation: fade-in 0.2s ease-out;
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* ============================================================
+   Utility layer: scrollbar-hide, focus rings
+   ============================================================ */
+@layer utilities {
+
+    /* Hide scrollbar but keep scrollable */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* ============================================================
+   Global focus-visible ring for keyboard accessibility
+   ============================================================ */
+:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Remove focus-visible outline from elements that handle it themselves */
+.btn:focus-visible,
+.input:focus-visible,
+.toggle-btn:focus-visible {
+    outline: none;
 }

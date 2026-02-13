@@ -9,17 +9,27 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { AlertTriangle, Star, Ship, ChevronDown, ArrowLeftRight } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import type { Route, Comparison } from '../../../core/domain/types';
 
 export function RoutesTab() {
     const api = useApi();
     const [routes, setRoutes] = useState<Route[]>([]);
+    const [allYears, setAllYears] = useState<number[]>([]);
     const [loading, setLoading] = useState(true);
     const [yearFilter, setYearFilter] = useState<number | undefined>(undefined);
     const [comparison, setComparison] = useState<Comparison | null>(null);
     const [comparingId, setComparingId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    // Fetch all years once on mount (unfiltered) so the dropdown always shows every option
+    useEffect(() => {
+        api.getRoutes(undefined).then((data) => {
+            const yrs = [...new Set(data.map((r) => r.year))].sort();
+            setAllYears(yrs);
+        }).catch(() => { /* silently ignore — main fetch will surface errors */ });
+    }, [api]);
 
     const fetchRoutes = useCallback(async () => {
         setLoading(true);
@@ -62,8 +72,6 @@ export function RoutesTab() {
         }
     };
 
-    const years = [...new Set(routes.map((r) => r.year))].sort();
-
     return (
         <div className="space-y-6">
             {/* ─── Header + Filter ─────────────────────────────── */}
@@ -81,16 +89,16 @@ export function RoutesTab() {
                             onChange={(e) =>
                                 setYearFilter(e.target.value ? Number(e.target.value) : undefined)
                             }
-                            className="input appearance-none pr-8 !w-auto min-w-[120px] cursor-pointer"
+                            className="input appearance-none pr-8 w-auto! min-w-[120px] cursor-pointer"
                         >
                             <option value="">All Years</option>
-                            {years.map((y) => (
+                            {allYears.map((y) => (
                                 <option key={y} value={y}>
                                     {y}
                                 </option>
                             ))}
                         </select>
-                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none text-xs">▼</span>
+                        <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none" />
                     </div>
                     <span className="badge badge-neutral">
                         {routes.length} route{routes.length !== 1 ? 's' : ''}
@@ -100,8 +108,8 @@ export function RoutesTab() {
 
             {/* ─── Error ───────────────────────────────────────── */}
             {error && (
-                <div className="flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
-                    <span>⚠</span>
+                <div className="fade-in flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
+                    <AlertTriangle size={16} />
                     <span>{error}</span>
                 </div>
             )}
@@ -113,7 +121,7 @@ export function RoutesTab() {
                 ) : routes.length === 0 ? (
                     <EmptyState />
                 ) : (
-                    <div className="overflow-x-auto">
+                    <div className="table-scroll">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="bg-surface-50/80 border-b border-surface-200">
@@ -191,7 +199,7 @@ export function RoutesTab() {
                                                 )}
                                                 {route.isBaseline && (
                                                     <span className="text-xs text-primary-600 font-semibold flex items-center gap-1">
-                                                        <span className="text-primary-400">★</span> Active
+                                                        <Star size={12} className="text-primary-400 fill-primary-400" /> Active
                                                     </span>
                                                 )}
                                             </div>
@@ -208,7 +216,7 @@ export function RoutesTab() {
             {comparison && (
                 <div className="card p-6">
                     <h3 className="text-lg font-bold text-surface-900 mb-4 flex items-center gap-2">
-                        <span className="text-primary-500">⟷</span>
+                        <ArrowLeftRight size={18} className="text-primary-500" />
                         Comparison: {comparison.baselineRouteId} vs {comparison.alternativeRouteId}
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -267,7 +275,7 @@ function EmptyState() {
     return (
         <div className="flex flex-col items-center justify-center py-16 px-6">
             <div className="w-14 h-14 bg-surface-100 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-2xl">🚢</span>
+                <Ship size={28} className="text-surface-400" />
             </div>
             <h3 className="text-base font-semibold text-surface-700 mb-1">No Routes Found</h3>
             <p className="text-sm text-surface-400 text-center max-w-sm">
