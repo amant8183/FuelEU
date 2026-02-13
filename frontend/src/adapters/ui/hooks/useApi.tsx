@@ -14,13 +14,15 @@ const ApiContext = createContext<ApiClientPort | null>(null);
 const defaultClient = new AxiosApiClient();
 
 export function ApiProvider({
-    client = defaultClient,
+    client,
     children,
 }: {
     client?: ApiClientPort;
     children: ReactNode;
 }) {
-    return <ApiContext.Provider value={client}>{children}</ApiContext.Provider>;
+    // Use passed client or fallback to default
+    const apiClient = client || defaultClient;
+    return <ApiContext.Provider value={apiClient}>{children}</ApiContext.Provider>;
 }
 
 export function useApi(): ApiClientPort {

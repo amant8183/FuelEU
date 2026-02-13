@@ -5,7 +5,7 @@ import { AppShell } from '../AppShell';
 
 const TABS = [
     { key: 'routes', label: 'Routes', icon: 'R' },
-    { key: 'compliance', label: 'Compliance', icon: 'C' },
+    { key: 'compare', label: 'Compare', icon: 'C' },
     { key: 'banking', label: 'Banking', icon: 'B' },
     { key: 'pooling', label: 'Pooling', icon: 'P' },
 ];
@@ -34,11 +34,11 @@ describe('AppShell', () => {
 
     it('marks active tab with aria-selected', () => {
         render(
-            <AppShell activeTab="compliance" tabs={TABS} onTabChange={() => { }}>
+            <AppShell activeTab="compare" tabs={TABS} onTabChange={() => { }}>
                 <div>Content</div>
             </AppShell>,
         );
-        const complianceTab = screen.getByRole('tab', { name: /Compliance/i });
+        const complianceTab = screen.getByRole('tab', { name: /Compare/i });
         expect(complianceTab).toHaveAttribute('aria-selected', 'true');
 
         const routesTab = screen.getByRole('tab', { name: /Routes/i });

@@ -51,6 +51,8 @@ export interface Comparison {
   alternativeCb: number;
   deltaCb: number;
   percentageSavings: number;
+  percentDiff: number;
+  compliant: boolean;
 }
 
 // ─── Bank Entry (Article 20) ──────────────────────────────────────
