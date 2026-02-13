@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ApiProvider } from './adapters/ui/hooks/useApi';
 import { AppShell } from './adapters/ui/components/AppShell';
 import { PlaceholderTab } from './adapters/ui/components/PlaceholderTab';
+import { RoutesTab } from './adapters/ui/components/RoutesTab';
 
 const TABS = [
   { key: 'routes', label: 'Routes', icon: '🚢' },
@@ -16,7 +17,7 @@ function App() {
   const renderTab = () => {
     switch (activeTab) {
       case 'routes':
-        return <PlaceholderTab title="Routes & Voyage Data" />;
+        return <RoutesTab />;
       case 'compliance':
         return <PlaceholderTab title="Compliance Balance" />;
       case 'banking':
