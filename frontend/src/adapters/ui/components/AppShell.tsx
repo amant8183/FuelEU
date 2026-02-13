@@ -25,7 +25,7 @@ export function AppShell({ activeTab, tabs, onTabChange, children }: AppShellPro
                 Skip to main content
             </a>
             {/* ─── Header ─────────────────────────────────────────── */}
-            <header className="bg-white/80 backdrop-blur-md border-b border-surface-200 sticky top-0 z-50">
+            <header className="bg-[#fefdfb]/80 backdrop-blur-md border-b border-surface-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
@@ -53,7 +53,7 @@ export function AppShell({ activeTab, tabs, onTabChange, children }: AppShellPro
             </header>
 
             {/* ─── Tab Navigation ────────────────────────────────── */}
-            <nav className="bg-white border-b border-surface-200" aria-label="Main navigation">
+            <nav className="bg-[#fefdfb] border-b border-surface-200" aria-label="Main navigation">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px" role="tablist" aria-label="Dashboard sections">
                         {tabs.map((tab) => (
@@ -92,7 +92,7 @@ export function AppShell({ activeTab, tabs, onTabChange, children }: AppShellPro
             </main>
 
             {/* ─── Footer ────────────────────────────────────────── */}
-            <footer className="bg-white border-t border-surface-200 py-4">
+            <footer className="bg-[#fefdfb] border-t border-surface-200 py-4">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-1">
                     <p className="text-xs text-surface-400">
                         © 2024 FuelEU Maritime — EU Regulation 2025/1221
