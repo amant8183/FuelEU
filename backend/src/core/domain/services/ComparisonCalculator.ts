@@ -7,6 +7,7 @@
 
 import { Route } from '../entities/Route';
 import { computeComplianceBalance } from './ComplianceCalculator';
+import { TARGET_INTENSITY } from '../../../shared/constants';
 
 /** Result of comparing a baseline route against an alternative route */
 export interface ComparisonResult {
@@ -36,6 +37,12 @@ export interface ComparisonResult {
 
     /** Percentage reduction in GHG intensity (positive = improvement) */
     percentageSavings: number;
+
+    /** Percent difference per spec: ((alternative / baseline) − 1) × 100 */
+    percentDiff: number;
+
+    /** Whether the alternative route is compliant (GHG ≤ target 89.3368) */
+    compliant: boolean;
 }
 
 /**
@@ -58,6 +65,14 @@ export function compareRoutes(baseline: Route, alternative: Route): ComparisonRe
     const percentageSavings =
         baseline.ghgIntensity === 0 ? 0 : (deltaGhgIntensity / baseline.ghgIntensity) * 100;
 
+    // Assignment formula: percentDiff = ((comparison / baseline) − 1) × 100
+    const percentDiff =
+        baseline.ghgIntensity === 0
+            ? 0
+            : ((alternative.ghgIntensity / baseline.ghgIntensity) - 1) * 100;
+
+    const compliant = alternative.ghgIntensity <= TARGET_INTENSITY;
+
     return {
         baselineRouteId: baseline.routeId,
         alternativeRouteId: alternative.routeId,
@@ -68,5 +83,7 @@ export function compareRoutes(baseline: Route, alternative: Route): ComparisonRe
         alternativeCb,
         deltaCb,
         percentageSavings,
+        percentDiff,
+        compliant,
     };
 }

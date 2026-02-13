@@ -30,6 +30,9 @@ describe('ComparisonCalculator', () => {
             expect(result.deltaGhgIntensity).toBeCloseTo(3.0, 5);      // 91.0 − 88.0
             expect(result.deltaCb).toBeGreaterThan(0);                   // R002 CB > R001 CB
             expect(result.percentageSavings).toBeCloseTo((3.0 / 91.0) * 100, 2);
+            // percentDiff = ((88.0 / 91.0) − 1) × 100 ≈ −3.2967
+            expect(result.percentDiff).toBeCloseTo(((88.0 / 91.0) - 1) * 100, 2);
+            expect(result.compliant).toBe(true); // 88.0 <= 89.3368
         });
 
         it('R001 vs R003 → negative delta (R003 is worse)', () => {
@@ -37,6 +40,8 @@ describe('ComparisonCalculator', () => {
             expect(result.deltaGhgIntensity).toBeCloseTo(-2.5, 5);      // 91.0 − 93.5
             expect(result.deltaCb).toBeLessThan(0);
             expect(result.percentageSavings).toBeLessThan(0);
+            expect(result.percentDiff).toBeGreaterThan(0); // alternative > baseline → positive %
+            expect(result.compliant).toBe(false); // 93.5 > 89.3368
         });
 
         it('R001 vs R004 → positive delta (R004 is slightly better)', () => {
@@ -79,6 +84,8 @@ describe('ComparisonCalculator', () => {
             expect(result).toHaveProperty('alternativeCb');
             expect(result).toHaveProperty('deltaCb');
             expect(result).toHaveProperty('percentageSavings');
+            expect(result).toHaveProperty('percentDiff');
+            expect(result).toHaveProperty('compliant');
         });
     });
 });
