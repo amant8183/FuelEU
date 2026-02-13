@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { ApiProvider } from './adapters/ui/hooks/useApi';
 import { AppShell } from './adapters/ui/components/AppShell';
-import { PlaceholderTab } from './adapters/ui/components/PlaceholderTab';
 import { RoutesTab } from './adapters/ui/components/RoutesTab';
 import { ComplianceTab } from './adapters/ui/components/ComplianceTab';
 import { BankingTab } from './adapters/ui/components/BankingTab';
+import { PoolingTab } from './adapters/ui/components/PoolingTab';
 
 const TABS = [
   { key: 'routes', label: 'Routes', icon: '🚢' },
@@ -25,7 +25,7 @@ function App() {
       case 'banking':
         return <BankingTab />;
       case 'pooling':
-        return <PlaceholderTab title="Article 21 — Pooling" />;
+        return <PoolingTab />;
       default:
         return null;
     }
