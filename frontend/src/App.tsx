@@ -3,6 +3,7 @@ import { ApiProvider } from './adapters/ui/hooks/useApi';
 import { AppShell } from './adapters/ui/components/AppShell';
 import { PlaceholderTab } from './adapters/ui/components/PlaceholderTab';
 import { RoutesTab } from './adapters/ui/components/RoutesTab';
+import { ComplianceTab } from './adapters/ui/components/ComplianceTab';
 
 const TABS = [
   { key: 'routes', label: 'Routes', icon: '🚢' },
@@ -19,7 +20,7 @@ function App() {
       case 'routes':
         return <RoutesTab />;
       case 'compliance':
-        return <PlaceholderTab title="Compliance Balance" />;
+        return <ComplianceTab />;
       case 'banking':
         return <PlaceholderTab title="Article 20 — Banking" />;
       case 'pooling':
