@@ -4,6 +4,7 @@ import { AppShell } from './adapters/ui/components/AppShell';
 import { PlaceholderTab } from './adapters/ui/components/PlaceholderTab';
 import { RoutesTab } from './adapters/ui/components/RoutesTab';
 import { ComplianceTab } from './adapters/ui/components/ComplianceTab';
+import { BankingTab } from './adapters/ui/components/BankingTab';
 
 const TABS = [
   { key: 'routes', label: 'Routes', icon: '🚢' },
@@ -22,7 +23,7 @@ function App() {
       case 'compliance':
         return <ComplianceTab />;
       case 'banking':
-        return <PlaceholderTab title="Article 20 — Banking" />;
+        return <BankingTab />;
       case 'pooling':
         return <PlaceholderTab title="Article 21 — Pooling" />;
       default:
