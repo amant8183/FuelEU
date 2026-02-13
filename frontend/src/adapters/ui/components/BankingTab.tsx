@@ -90,62 +90,64 @@ export function BankingTab() {
         <div className="space-y-6">
             {/* ─── Header ─────────────────────────────────────── */}
             <div>
-                <h2 className="text-2xl font-bold text-surface-900">Article 20 — Banking</h2>
-                <p className="text-sm text-surface-500 mt-1">
+                <h2 className="section-title">Article 20 — Banking</h2>
+                <p className="section-subtitle">
                     Bank surplus compliance balance or apply banked surplus to offset deficits
                 </p>
             </div>
 
             {/* ─── KPI Cards ─────────────────────────────────── */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl border border-surface-200 p-4">
+                <div className="card-kpi card-kpi--primary p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="text-base">📥</span>
                         <span className="text-xs font-medium text-surface-500">Deposits</span>
                     </div>
-                    <p className="text-2xl font-bold text-surface-900">{depositCount}</p>
+                    <p className="text-2xl font-bold text-surface-900 tabular-nums">{depositCount}</p>
                 </div>
-                <div className="bg-primary-50 rounded-xl border border-primary-200 p-4">
+                <div className="card-kpi card-kpi--success p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="text-base">💰</span>
-                        <span className="text-xs font-medium text-primary-500">Total Banked</span>
+                        <span className="text-xs font-medium text-surface-500">Total Banked</span>
                     </div>
-                    <p className="text-2xl font-bold text-primary-700">{totalDeposited.toLocaleString()}</p>
-                    <p className="text-xs text-primary-400 mt-0.5">gCO₂eq</p>
+                    <p className="text-2xl font-bold text-surface-900 tabular-nums">{totalDeposited.toLocaleString()}</p>
+                    <p className="text-xs text-surface-400 mt-0.5">gCO₂eq</p>
                 </div>
-                <div className="bg-white rounded-xl border border-surface-200 p-4">
+                <div className="card-kpi card-kpi--accent p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="text-base">📤</span>
                         <span className="text-xs font-medium text-surface-500">Applies</span>
                     </div>
-                    <p className="text-2xl font-bold text-surface-900">{applyCount}</p>
+                    <p className="text-2xl font-bold text-surface-900 tabular-nums">{applyCount}</p>
                 </div>
-                <div className="bg-accent-50 rounded-xl border border-accent-200 p-4">
+                <div className="card-kpi card-kpi--error p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="text-base">🔄</span>
-                        <span className="text-xs font-medium text-accent-500">Total Applied</span>
+                        <span className="text-xs font-medium text-surface-500">Total Applied</span>
                     </div>
-                    <p className="text-2xl font-bold text-accent-700">{totalApplied.toLocaleString()}</p>
-                    <p className="text-xs text-accent-400 mt-0.5">gCO₂eq</p>
+                    <p className="text-2xl font-bold text-surface-900 tabular-nums">{totalApplied.toLocaleString()}</p>
+                    <p className="text-xs text-surface-400 mt-0.5">gCO₂eq</p>
                 </div>
             </div>
 
             {/* ─── Feedback ───────────────────────────────────── */}
             {error && (
-                <div className="bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-xl text-sm">
-                    {error}
+                <div className="flex items-center gap-2 bg-error-50 border border-error-500/20 text-error-700 px-4 py-3 rounded-lg text-sm">
+                    <span>⚠</span>
+                    <span>{error}</span>
                 </div>
             )}
             {success && (
-                <div className="bg-success-50 border border-success-500/20 text-success-700 px-4 py-3 rounded-xl text-sm">
-                    {success}
+                <div className="flex items-center gap-2 bg-success-50 border border-success-500/20 text-success-700 px-4 py-3 rounded-lg text-sm">
+                    <span>✓</span>
+                    <span>{success}</span>
                 </div>
             )}
 
             {/* ─── Forms Grid ─────────────────────────────────── */}
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Deposit Card */}
-                <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-6">
+                <div className="card p-6">
                     <div className="flex items-center gap-3 mb-5">
                         <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center">
                             <span className="text-xl">📥</span>
@@ -157,34 +159,30 @@ export function BankingTab() {
                     </div>
                     <form onSubmit={handleDeposit} className="space-y-4">
                         <div>
-                            <label className="block text-xs font-medium text-surface-600 mb-1">Ship ID</label>
+                            <label htmlFor="deposit-ship" className="block text-xs font-medium text-surface-600 mb-1">Ship ID</label>
                             <input
+                                id="deposit-ship"
                                 type="text"
                                 value={depositShipId}
                                 onChange={(e) => setDepositShipId(e.target.value)}
                                 placeholder="e.g. SHIP-001"
                                 required
-                                className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm bg-white
-                           text-surface-800 placeholder:text-surface-400
-                           focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-400
-                           transition-all"
+                                className="input w-full"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-surface-600 mb-1">
+                            <label htmlFor="deposit-amount" className="block text-xs font-medium text-surface-600 mb-1">
                                 Amount (gCO₂eq)
                             </label>
                             <input
+                                id="deposit-amount"
                                 type="number"
                                 value={depositAmount}
                                 onChange={(e) => setDepositAmount(e.target.value)}
                                 placeholder="e.g. 5000"
                                 required
                                 min="1"
-                                className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm bg-white
-                           text-surface-800 placeholder:text-surface-400
-                           focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-400
-                           transition-all"
+                                className="input w-full"
                             />
                         </div>
                         <div>
@@ -195,18 +193,13 @@ export function BankingTab() {
                                 value={depositYear}
                                 onChange={(e) => setDepositYear(e.target.value)}
                                 required
-                                className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm bg-white
-                           text-surface-800
-                           focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-400
-                           transition-all"
+                                className="input w-full"
                             />
                         </div>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg
-                         hover:bg-primary-700 transition-colors disabled:opacity-50 cursor-pointer
-                         shadow-sm"
+                            className="btn btn-primary w-full"
                         >
                             {loading ? 'Processing...' : '📥 Deposit Surplus'}
                         </button>
@@ -214,7 +207,7 @@ export function BankingTab() {
                 </div>
 
                 {/* Apply Card */}
-                <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-6">
+                <div className="card p-6">
                     <div className="flex items-center gap-3 mb-5">
                         <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center">
                             <span className="text-xl">📤</span>
@@ -226,42 +219,36 @@ export function BankingTab() {
                     </div>
                     <form onSubmit={handleApply} className="space-y-4">
                         <div>
-                            <label className="block text-xs font-medium text-surface-600 mb-1">Ship ID</label>
+                            <label htmlFor="apply-ship" className="block text-xs font-medium text-surface-600 mb-1">Ship ID</label>
                             <input
+                                id="apply-ship"
                                 type="text"
                                 value={applyShipId}
                                 onChange={(e) => setApplyShipId(e.target.value)}
                                 placeholder="e.g. SHIP-001"
                                 required
-                                className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm bg-white
-                           text-surface-800 placeholder:text-surface-400
-                           focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-400
-                           transition-all"
+                                className="input w-full"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-surface-600 mb-1">
+                            <label htmlFor="apply-amount" className="block text-xs font-medium text-surface-600 mb-1">
                                 Amount (gCO₂eq)
                             </label>
                             <input
+                                id="apply-amount"
                                 type="number"
                                 value={applyAmount}
                                 onChange={(e) => setApplyAmount(e.target.value)}
                                 placeholder="e.g. 3000"
                                 required
                                 min="1"
-                                className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm bg-white
-                           text-surface-800 placeholder:text-surface-400
-                           focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-400
-                           transition-all"
+                                className="input w-full"
                             />
                         </div>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full px-4 py-2.5 bg-accent-600 text-white text-sm font-medium rounded-lg
-                         hover:bg-accent-700 transition-colors disabled:opacity-50 cursor-pointer
-                         shadow-sm mt-auto"
+                            className="btn btn-secondary w-full"
                         >
                             {loading ? 'Processing...' : '📤 Apply Surplus'}
                         </button>
@@ -271,24 +258,24 @@ export function BankingTab() {
 
             {/* ─── Last Deposit Result ────────────────────────── */}
             {lastEntry && (
-                <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-6">
-                    <h3 className="text-sm font-semibold text-surface-600 mb-3">Last Deposit</h3>
+                <div className="card p-6">
+                    <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-4">Last Deposit</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-surface-50 rounded-xl p-3">
+                        <div className="bg-surface-50 rounded-lg p-3">
                             <p className="text-xs text-surface-400 mb-0.5">Entry ID</p>
                             <p className="text-sm font-mono font-semibold text-surface-800">{lastEntry.id}</p>
                         </div>
-                        <div className="bg-surface-50 rounded-xl p-3">
+                        <div className="bg-surface-50 rounded-lg p-3">
                             <p className="text-xs text-surface-400 mb-0.5">Ship</p>
                             <p className="text-sm font-mono font-semibold text-surface-800">{lastEntry.shipId}</p>
                         </div>
-                        <div className="bg-surface-50 rounded-xl p-3">
+                        <div className="bg-surface-50 rounded-lg p-3">
                             <p className="text-xs text-surface-400 mb-0.5">Year</p>
-                            <p className="text-sm font-semibold text-surface-800">{lastEntry.year}</p>
+                            <p className="text-sm font-semibold text-surface-800 tabular-nums">{lastEntry.year}</p>
                         </div>
-                        <div className="bg-primary-50 rounded-xl p-3 border border-primary-200">
-                            <p className="text-xs text-primary-500 mb-0.5">Amount</p>
-                            <p className="text-sm font-mono font-bold text-primary-700">
+                        <div className="card-kpi card-kpi--success p-3">
+                            <p className="text-xs text-surface-500 mb-0.5">Amount</p>
+                            <p className="text-sm font-mono font-bold text-surface-900 tabular-nums">
                                 {lastEntry.amountGco2eq.toLocaleString()} gCO₂eq
                             </p>
                         </div>
