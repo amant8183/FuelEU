@@ -24,7 +24,7 @@ export interface ApiClientPort {
     compareRoutes(routeId: string): Promise<Comparison>;
 
     // ─── Compliance ────────────────────────────────────────────────
-    computeComplianceBalance(): Promise<ComplianceBalance[]>;
+    computeComplianceBalance(year?: number): Promise<ComplianceBalance[]>;
     getAdjustedComplianceBalance(year?: number): Promise<AdjustedComplianceBalance[]>;
 
     // ─── Banking (Article 20) ─────────────────────────────────────

@@ -49,8 +49,9 @@ export class AxiosApiClient implements ApiClientPort {
 
     // ─── Compliance ──────────────────────────────────────────────────
 
-    async computeComplianceBalance(): Promise<ComplianceBalance[]> {
-        const { data } = await this.http.get<ComplianceBalance[]>('/compliance/cb');
+    async computeComplianceBalance(year?: number): Promise<ComplianceBalance[]> {
+        const params = year !== undefined ? { year } : {};
+        const { data } = await this.http.get<ComplianceBalance[]>('/compliance/cb', { params });
         return data;
     }
 

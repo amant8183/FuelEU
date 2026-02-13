@@ -92,4 +92,31 @@ describe('BankingTab', () => {
 
         expect(await screen.findByText(/Deposit failed/i)).toBeInTheDocument();
     });
+
+    it('displays compliance balances', async () => {
+        const mockCb = [
+            { shipId: 'SHIP-A', year: 2024, cbGco2eq: 100, status: 'surplus' as const },
+            { shipId: 'SHIP-B', year: 2024, cbGco2eq: -50, status: 'deficit' as const },
+        ];
+
+        const api = makeMockApi({
+            computeComplianceBalance: vi.fn().mockResolvedValue(mockCb),
+        });
+
+        render(
+            <ApiProvider client={api}>
+                <BankingTab />
+            </ApiProvider>
+        );
+
+        expect(await screen.findByText('SHIP-A')).toBeInTheDocument();
+        expect(screen.getByText('+100')).toBeInTheDocument();
+        expect(screen.getByText('surplus')).toBeInTheDocument();
+
+        expect(screen.getByText('SHIP-B')).toBeInTheDocument();
+        expect(screen.getByText('-50')).toBeInTheDocument();
+        expect(screen.getByText('deficit')).toBeInTheDocument();
+
+        expect(api.computeComplianceBalance).toHaveBeenCalledWith(2024);
+    });
 });

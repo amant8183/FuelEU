@@ -8,10 +8,10 @@
  * - Last operation result card
  */
 
-import { useState } from 'react';
-import { ArrowDownToLine, Wallet, ArrowUpFromLine, RefreshCw, AlertTriangle, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowDownToLine, Wallet, ArrowUpFromLine, RefreshCw, AlertTriangle, CheckCircle, Ship } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
-import type { BankEntry } from '../../../core/domain/types';
+import type { BankEntry, ComplianceBalance } from '../../../core/domain/types';
 
 export function BankingTab() {
     const api = useApi();
@@ -36,6 +36,21 @@ export function BankingTab() {
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    // Compliance Balances
+    const [complianceBalances, setComplianceBalances] = useState<ComplianceBalance[]>([]);
+
+    useEffect(() => {
+        const fetchCb = async () => {
+            try {
+                const data = await api.computeComplianceBalance(Number(depositYear));
+                setComplianceBalances(data);
+            } catch (err) {
+                console.error('Failed to fetch CB', err);
+            }
+        };
+        fetchCb();
+    }, [api, depositYear, lastEntry]); // Refetch when year changes or a deposit is made
 
     const clearFeedback = () => {
         setSuccess(null);
@@ -95,6 +110,48 @@ export function BankingTab() {
                 <p className="section-subtitle">
                     Bank surplus compliance balance or apply banked surplus to offset deficits
                 </p>
+            </div>
+
+            {/* ─── Compliance Overview ────────────────────────── */}
+            <div className="card p-6 border-l-4 border-l-primary-500">
+                <h3 className="text-base font-bold text-surface-900 mb-4 flex items-center gap-2">
+                    <Ship size={18} className="text-primary-500" />
+                    Compliance Balances ({depositYear})
+                </h3>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-surface-50 text-surface-500 font-medium">
+                            <tr>
+                                <th className="px-4 py-2">Ship ID</th>
+                                <th className="px-4 py-2 text-right">Balance (gCO₂eq)</th>
+                                <th className="px-4 py-2 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-surface-100">
+                            {complianceBalances.length === 0 ? (
+                                <tr>
+                                    <td colSpan={3} className="px-4 py-4 text-center text-surface-500 italic">
+                                        No data for this year
+                                    </td>
+                                </tr>
+                            ) : (
+                                complianceBalances.map((cb) => (
+                                    <tr key={cb.shipId} className="hover:bg-surface-50">
+                                        <td className="px-4 py-2 font-mono text-surface-700">{cb.shipId}</td>
+                                        <td className="px-4 py-2 text-right tabular-nums font-medium">
+                                            {cb.cbGco2eq > 0 ? '+' : ''}{cb.cbGco2eq.toLocaleString()}
+                                        </td>
+                                        <td className="px-4 py-2 text-center">
+                                            <span className={`badge ${cb.status === 'surplus' ? 'badge-success' : cb.status === 'deficit' ? 'badge-error' : 'badge-neutral'}`}>
+                                                {cb.status}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* ─── KPI Cards ─────────────────────────────────── */}
