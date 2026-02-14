@@ -6,7 +6,8 @@
  */
 
 import 'dotenv/config';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
 import knexConfig from '../../../knexfile';
 
 const env = process.env.NODE_ENV || 'development';
