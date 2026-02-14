@@ -4,7 +4,7 @@
  * Tables: routes, ship_compliance, bank_entries, pools, pool_members
  */
 
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
     // --- routes ---

@@ -4,7 +4,7 @@
  * Data matches the test constants used in unit tests.
  */
 
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 export async function seed(knex: Knex): Promise<void> {
     await knex('routes').del();
