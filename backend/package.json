@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/infrastructure/server/app.js",
+    "start": "npx knex migrate:latest --knexfile knexfile.ts && knex seed:run --knexfile knexfile.ts && node dist/infrastructure/server/app.js",
     "dev": "ts-node src/infrastructure/server/app.ts",
     "lint": "eslint 'src/**/*.ts' 'tests/**/*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' 'tests/**/*.ts' --fix",
