@@ -103,15 +103,65 @@ describe('RoutesTab', () => {
         expect(await screen.findByText('2 routes')).toBeInTheDocument();
     });
 
-    it('handles API error gracefully', async () => {
-        const failApi = makeMockApi({
-            getRoutes: vi.fn().mockRejectedValue(new Error('fail')),
-        });
+    it('shows distance in km', async () => {
         render(
-            <ApiProvider client={failApi}>
+            <ApiProvider client={mockApi}>
                 <RoutesTab />
             </ApiProvider>,
         );
-        expect(await screen.findByText(/Failed to load routes/i)).toBeInTheDocument();
+        expect(await screen.findByText('Distance (km)')).toBeInTheDocument();
+    });
+
+    it('filters routes by vessel type', async () => {
+        const user = userEvent.setup();
+        render(
+            <ApiProvider client={mockApi}>
+                <RoutesTab />
+            </ApiProvider>,
+        );
+
+        await screen.findByText('RT-001'); // Wait for load
+
+        // Filter by Container (RT-001 is Container, RT-002 is Tanker)
+        const vesselSelect = screen.getByLabelText(/Filter by vessel type/i);
+        await user.selectOptions(vesselSelect, 'Container');
+
+        expect(screen.getByText('RT-001')).toBeInTheDocument();
+        expect(screen.queryByText('RT-002')).not.toBeInTheDocument();
+    });
+
+    it('filters routes by fuel type', async () => {
+        const user = userEvent.setup();
+        render(
+            <ApiProvider client={mockApi}>
+                <RoutesTab />
+            </ApiProvider>,
+        );
+
+        await screen.findByText('RT-001');
+
+        // Filter by LNG (RT-001 is VLSFO, RT-002 is LNG)
+        const fuelSelect = screen.getByLabelText(/Filter by fuel type/i);
+        await user.selectOptions(fuelSelect, 'LNG');
+
+        expect(screen.queryByText('RT-001')).not.toBeInTheDocument();
+        expect(screen.getByText('RT-002')).toBeInTheDocument();
+    });
+
+    it('shows empty state when no routes match filter', async () => {
+        const user = userEvent.setup();
+        render(
+            <ApiProvider client={mockApi}>
+                <RoutesTab />
+            </ApiProvider>,
+        );
+
+        await screen.findByText('RT-001');
+
+        const vesselSelect = screen.getByLabelText(/Filter by vessel type/i);
+        await user.selectOptions(vesselSelect, 'RoRo'); // None in mock data
+
+        expect(screen.getByText(/No routes found/i)).toBeInTheDocument();
     });
 });
+

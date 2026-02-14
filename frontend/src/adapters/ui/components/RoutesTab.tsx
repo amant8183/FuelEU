@@ -2,16 +2,16 @@
  * RoutesTab — Displays route data in a styled table.
  *
  * Features:
- * - Year filter dropdown
+ * - Year, vesselType, and fuelType filter dropdowns
  * - Set Baseline button per row
- * - Compare button for non-baseline routes
+ * - Distance displayed in km
  * - Skeleton loading, empty state, striped rows, hover highlights
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { AlertTriangle, Star, Ship, ChevronDown, ArrowLeftRight } from 'lucide-react';
+import { AlertTriangle, Star, Ship, ChevronDown } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
-import type { Route, Comparison } from '../../../core/domain/types';
+import type { Route } from '../../../core/domain/types';
 
 export function RoutesTab() {
     const api = useApi();
@@ -19,8 +19,9 @@ export function RoutesTab() {
     const [allYears, setAllYears] = useState<number[]>([]);
     const [loading, setLoading] = useState(true);
     const [yearFilter, setYearFilter] = useState<number | undefined>(undefined);
-    const [comparison, setComparison] = useState<Comparison | null>(null);
-    const [comparingId, setComparingId] = useState<string | null>(null);
+    const [vesselFilter, setVesselFilter] = useState<string>('');
+    const [fuelFilter, setFuelFilter] = useState<string>('');
+    const [filteredRoutes, setFilteredRoutes] = useState<Route[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     // Fetch all years once on mount (unfiltered) so the dropdown always shows every option
@@ -37,6 +38,7 @@ export function RoutesTab() {
         try {
             const data = await api.getRoutes(yearFilter);
             setRoutes(data);
+            setFilteredRoutes(data);
         } catch {
             setError('Failed to load routes');
         } finally {
@@ -48,48 +50,54 @@ export function RoutesTab() {
         fetchRoutes();
     }, [fetchRoutes]);
 
+    // Apply client-side filters
+    useEffect(() => {
+        let result = routes;
+        if (vesselFilter) {
+            result = result.filter(r => r.vesselType === vesselFilter);
+        }
+        if (fuelFilter) {
+            result = result.filter(r => r.fuelType === fuelFilter);
+        }
+        setFilteredRoutes(result);
+    }, [routes, vesselFilter, fuelFilter]);
+
     const handleSetBaseline = async (routeId: string) => {
         try {
             await api.setBaseline(routeId);
             await fetchRoutes();
-            setComparison(null);
         } catch {
             setError('Failed to set baseline');
-        }
-    };
-
-    const handleCompare = async (routeId: string) => {
-        setComparingId(routeId);
-        setError(null);
-        try {
-            const result = await api.compareRoutes(routeId);
-            setComparison(result);
-        } catch {
-            setError('No baseline set. Please set a baseline route first.');
-            setComparison(null);
-        } finally {
-            setComparingId(null);
         }
     };
 
     return (
         <div className="space-y-6">
             {/* ─── Header + Filter ─────────────────────────────── */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                    <h2 className="section-title">Routes &amp; Voyage Data</h2>
-                    <p className="section-subtitle">
-                        Manage routes, set baselines, and compare GHG intensity
-                    </p>
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 className="section-title">Routes &amp; Voyage Data</h2>
+                        <p className="section-subtitle">
+                            Manage routes, set baselines, and analyze GHG intensity
+                        </p>
+                    </div>
+                    <span className="badge badge-neutral">
+                        {filteredRoutes.length} route{filteredRoutes.length !== 1 ? 's' : ''}
+                    </span>
                 </div>
-                <div className="flex items-center gap-3">
+
+                {/* Filters Toolbar */}
+                <div className="flex flex-wrap items-center gap-3 bg-white p-3 rounded-lg border border-surface-200 shadow-sm">
+                    {/* Year Filter */}
                     <div className="relative">
                         <select
+                            aria-label="Filter by year"
                             value={yearFilter ?? ''}
                             onChange={(e) =>
                                 setYearFilter(e.target.value ? Number(e.target.value) : undefined)
                             }
-                            className="input appearance-none pr-8 w-auto! min-w-[120px] cursor-pointer"
+                            className="input appearance-none pr-8 w-auto min-w-[120px] cursor-pointer text-sm py-1.5"
                         >
                             <option value="">All Years</option>
                             {allYears.map((y) => (
@@ -100,9 +108,41 @@ export function RoutesTab() {
                         </select>
                         <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none" />
                     </div>
-                    <span className="badge badge-neutral">
-                        {routes.length} route{routes.length !== 1 ? 's' : ''}
-                    </span>
+
+                    {/* Vessel Type Filter */}
+                    <div className="relative">
+                        <select
+                            aria-label="Filter by vessel type"
+                            value={vesselFilter}
+                            onChange={(e) => setVesselFilter(e.target.value)}
+                            className="input appearance-none pr-8 w-auto min-w-[140px] cursor-pointer text-sm py-1.5"
+                        >
+                            <option value="">All Vessels</option>
+                            <option value="Container">Container</option>
+                            <option value="BulkCarrier">Bulk Carrier</option>
+                            <option value="Tanker">Tanker</option>
+                            <option value="RoRo">RoPax / RoRo</option>
+                        </select>
+                        <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none" />
+                    </div>
+
+                    {/* Fuel Type Filter */}
+                    <div className="relative">
+                        <select
+                            aria-label="Filter by fuel type"
+                            value={fuelFilter}
+                            onChange={(e) => setFuelFilter(e.target.value)}
+                            className="input appearance-none pr-8 w-auto min-w-[120px] cursor-pointer text-sm py-1.5"
+                        >
+                            <option value="">All Fuels</option>
+                            <option value="HFO">HFO</option>
+                            <option value="MGO">MGO</option>
+                            <option value="VLSFO">VLSFO</option>
+                            <option value="LNG">LNG</option>
+                            <option value="Methanol">Methanol</option>
+                        </select>
+                        <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none" />
+                    </div>
                 </div>
             </div>
 
@@ -118,7 +158,7 @@ export function RoutesTab() {
             <div className="card overflow-hidden">
                 {loading ? (
                     <TableSkeleton />
-                ) : routes.length === 0 ? (
+                ) : filteredRoutes.length === 0 ? (
                     <EmptyState />
                 ) : (
                     <div className="table-scroll">
@@ -131,13 +171,13 @@ export function RoutesTab() {
                                     <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Year</th>
                                     <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">GHG Intensity</th>
                                     <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Fuel (t)</th>
-                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Distance (nm)</th>
+                                    <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Distance (km)</th>
                                     <th className="text-right px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider">Emissions (t)</th>
                                     <th className="text-center px-5 py-3.5 font-semibold text-surface-500 text-xs uppercase tracking-wider w-[180px]">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-surface-100">
-                                {routes.map((route, idx) => (
+                                {filteredRoutes.map((route, idx) => (
                                     <tr
                                         key={route.id}
                                         className={`
@@ -180,22 +220,12 @@ export function RoutesTab() {
                                         <td className="px-5 py-3.5 text-center">
                                             <div className="flex items-center justify-center gap-2">
                                                 {!route.isBaseline && (
-                                                    <>
-                                                        <button
-                                                            onClick={() => handleSetBaseline(route.routeId)}
-                                                            className="btn btn-secondary btn-sm"
-                                                        >
-                                                            Set Baseline
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleCompare(route.routeId)}
-                                                            disabled={comparingId === route.routeId}
-                                                            className="btn btn-sm"
-                                                            style={{ backgroundColor: 'var(--color-accent-50)', color: 'var(--color-accent-700)', borderColor: 'var(--color-accent-200)' }}
-                                                        >
-                                                            {comparingId === route.routeId ? '...' : 'Compare'}
-                                                        </button>
-                                                    </>
+                                                    <button
+                                                        onClick={() => handleSetBaseline(route.routeId)}
+                                                        className="btn btn-secondary btn-sm"
+                                                    >
+                                                        Set Baseline
+                                                    </button>
                                                 )}
                                                 {route.isBaseline && (
                                                     <span className="text-xs text-primary-600 font-semibold flex items-center gap-1">
@@ -212,39 +242,8 @@ export function RoutesTab() {
                 )}
             </div>
 
-            {/* ─── Comparison Result ──────────────────────────── */}
-            {comparison && (
-                <div className="card p-6">
-                    <h3 className="text-lg font-bold text-surface-900 mb-4 flex items-center gap-2">
-                        <ArrowLeftRight size={18} className="text-primary-500" />
-                        Comparison: {comparison.baselineRouteId} vs {comparison.alternativeRouteId}
-                    </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <ComparisonCard
-                            label="Baseline GHG"
-                            value={comparison.baselineGhgIntensity.toFixed(1)}
-                            unit="gCO₂eq/MJ"
-                        />
-                        <ComparisonCard
-                            label="Alternative GHG"
-                            value={comparison.alternativeGhgIntensity.toFixed(1)}
-                            unit="gCO₂eq/MJ"
-                        />
-                        <ComparisonCard
-                            label="Delta GHG"
-                            value={comparison.deltaGhgIntensity.toFixed(2)}
-                            unit="gCO₂eq/MJ"
-                            highlight={comparison.deltaGhgIntensity > 0 ? 'positive' : 'negative'}
-                        />
-                        <ComparisonCard
-                            label="Savings"
-                            value={`${comparison.percentageSavings.toFixed(2)}%`}
-                            highlight={comparison.percentageSavings > 0 ? 'positive' : 'negative'}
-                        />
-                    </div>
-                </div>
-            )}
-        </div>
+
+        </div >
     );
 }
 
@@ -285,29 +284,4 @@ function EmptyState() {
     );
 }
 
-function ComparisonCard({
-    label,
-    value,
-    unit,
-    highlight,
-}: {
-    label: string;
-    value: string;
-    unit?: string;
-    highlight?: 'positive' | 'negative';
-}) {
-    const accent =
-        highlight === 'positive'
-            ? 'card-kpi--success'
-            : highlight === 'negative'
-                ? 'card-kpi--error'
-                : 'card-kpi--primary';
 
-    return (
-        <div className={`card-kpi ${accent} p-4`}>
-            <p className="text-xs font-medium text-surface-500 mb-1">{label}</p>
-            <p className="text-xl font-bold text-surface-900">{value}</p>
-            {unit && <p className="text-xs text-surface-400 mt-0.5">{unit}</p>}
-        </div>
-    );
-}
