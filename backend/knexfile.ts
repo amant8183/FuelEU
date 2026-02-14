@@ -30,7 +30,11 @@ const config: Record<string, Knex.Config> = {
         },
         migrations: {
             directory: './src/infrastructure/db/migrations',
-            extension: 'ts',
+            extension: 'js',
+        },
+        seeds: {
+            directory: './src/infrastructure/db/seeds',
+            extension: 'js',
         },
         pool: { min: 2, max: 10 },
     },

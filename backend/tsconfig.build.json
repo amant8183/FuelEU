@@ -1,10 +1,11 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "rootDir": "./src"
+        "rootDir": "."
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "knexfile.ts"
     ],
     "exclude": [
         "node_modules",
