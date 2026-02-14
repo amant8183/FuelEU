@@ -36,6 +36,8 @@ export class CompareRoutesUseCase {
             alternativeCb: result.alternativeCb,
             deltaCb: result.deltaCb,
             percentageSavings: result.percentageSavings,
+            percentDiff: result.percentDiff,
+            compliant: result.compliant,
         };
     }
 }

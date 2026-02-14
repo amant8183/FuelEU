@@ -18,4 +18,6 @@ export interface ComparisonDto {
     alternativeCb: number;
     deltaCb: number;
     percentageSavings: number;
+    percentDiff: number;
+    compliant: boolean;
 }
