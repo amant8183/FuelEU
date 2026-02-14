@@ -6,6 +6,13 @@ Built with **Hexagonal Architecture** (Ports & Adapters) to ensure domain logic 
 
 ---
 
+## 🌐 Live Demo
+
+- **Frontend:** [https://fuel-eu-xi.vercel.app/](https://fuel-eu-xi.vercel.app/)
+- **Backend:** [https://fueleu-3x6a.onrender.com](https://fueleu-3x6a.onrender.com)
+
+---
+
 ## 🚀 Tech Stack
 
 ### Frontend
@@ -68,6 +75,18 @@ npm install
 npm run dev
 ```
 Runs on `http://localhost:5173`.
+
+---
+
+## 🚀 Deployment Config
+
+### Backend (Render)
+- `NODE_ENV`: `production`
+- `DATABASE_URL`: (Internal DB Connection String)
+- `NPM_CONFIG_PRODUCTION`: `false` (Required for build)
+
+### Frontend (Vercel)
+- `VITE_API_URL`: `https://fueleu-3x6a.onrender.com`
 
 ---
 
